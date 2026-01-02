@@ -14,15 +14,10 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
-// Spoken languages with associated country codes for flags
 const languages = [
-  { value: "english", label: "English", countryCode: "US" },
+  { value: "english", label: "English", countryCode: "GB" },
   { value: "spanish", label: "Spanish", countryCode: "ES" },
   { value: "french", label: "French", countryCode: "FR" },
   { value: "german", label: "German", countryCode: "DE" },
@@ -35,7 +30,9 @@ const languages = [
 
 function ComboBoxResponsive() {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("english") // <-- Default is now English
+  const [value, setValue] = React.useState("english")
+
+  const selectedLang = languages.find((lang) => lang.value === value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,28 +41,23 @@ function ComboBoxResponsive() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-35 justify-between"
+          className="w-20 sm:w-35 justify-between px-2 sm:px-3"
         >
-          {value ? (
-            <div className="flex items-center gap-2">
-              <ReactCountryFlag
-                countryCode={
-                  languages.find((lang) => lang.value === value)?.countryCode ||
-                  "US"
-                }
-                svg
-                style={{ width: "1.5em", height: "1.5em" }}
-                title={languages.find((lang) => lang.value === value)?.label}
-              />
-              {languages.find((lang) => lang.value === value)?.label}
-            </div>
-          ) : (
-            "Select language..."
-          )}
+          <div className="flex items-center gap-2">
+            <ReactCountryFlag
+              countryCode={selectedLang?.countryCode || "US"}
+              svg
+              style={{ width: "1.5em", height: "1.5em" }}
+              title={selectedLang?.label}
+            />
+            {/* Only show language text on small screens and up */}
+            <span className="hidden sm:inline">{selectedLang?.label}</span>
+          </div>
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+
+      <PopoverContent className="w-50 p-0">
         <Command>
           <CommandInput placeholder="Search language..." className="h-9" />
           <CommandList>
@@ -80,6 +72,7 @@ function ComboBoxResponsive() {
                     setOpen(false)
                   }}
                 >
+                  {/* Show flag + language in dropdown always */}
                   <div className="flex items-center gap-2">
                     <ReactCountryFlag
                       countryCode={lang.countryCode}
@@ -87,7 +80,7 @@ function ComboBoxResponsive() {
                       style={{ width: "1.5em", height: "1.5em" }}
                       title={lang.label}
                     />
-                    {lang.label}
+                    <span>{lang.label}</span>
                   </div>
                   <Check
                     className={cn(

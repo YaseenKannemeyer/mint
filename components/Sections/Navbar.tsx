@@ -1,4 +1,5 @@
 "use client"
+import { FcMoneyTransfer } from "react-icons/fc";
 
 import * as React from "react"
 import Link from "next/link"
